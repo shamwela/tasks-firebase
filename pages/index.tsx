@@ -70,9 +70,9 @@ const Home = () => {
   return (
     <>
       <Head>
-        <title>Tasks Firebase</title>
+        <title>Tasks</title>
       </Head>
-      <h1>Tasks Firebase</h1>
+      <h1>Tasks</h1>
       {tasks?.map(({ id, name, completed }) => (
         <div key={id}>
           <span style={{ marginRight: '2rem' }}>{name}</span>
