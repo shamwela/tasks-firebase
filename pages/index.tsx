@@ -1,9 +1,11 @@
 import {
   collection,
+  deleteDoc,
   doc,
   getDocs,
   getFirestore,
   setDoc,
+  updateDoc,
 } from 'firebase/firestore'
 import { useEffect, useState } from 'react'
 
@@ -55,6 +57,16 @@ const Home = () => {
     await setDoc(newDocument, { name, completed })
   }
 
+  const toggleCompletion = async (id: string, completed: boolean) => {
+    const documentReference = doc(db, 'tasks', id)
+    await updateDoc(documentReference, { completed: !completed })
+  }
+
+  const handleDelete = async (id: string) => {
+    const documentReference = doc(db, 'tasks', id)
+    await deleteDoc(documentReference)
+  }
+
   return (
     <>
       <Head>
@@ -64,7 +76,16 @@ const Home = () => {
       {tasks?.map(({ id, name, completed }) => (
         <div key={id}>
           <span style={{ marginRight: '2rem' }}>{name}</span>
-          <span>{completed ? 'Completed' : 'Not completed'}</span>
+          <span
+            onClick={() => toggleCompletion(id, completed)}
+            className='cursor-pointer'
+          >
+            {completed ? 'Completed' : 'Not completed'}
+          </span>
+
+          <button onClick={() => handleDelete(id)} className='btn btn-danger'>
+            Delete
+          </button>
         </div>
       ))}
 
