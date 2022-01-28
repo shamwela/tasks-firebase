@@ -25,6 +25,21 @@ const Home = () => {
   const [tasks, setTasks] = useState<Task[] | undefined>(undefined)
   const [newTaskName, setNewTaskName] = useState<string | undefined>(undefined)
 
+  const handleNewTaskName = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setNewTaskName(event.target.value)
+  }
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+
+    const id = Date.now().toString()
+    const name = newTaskName
+    const completed = false
+
+    const newDocument = doc(db, 'tasks', id)
+    await setDoc(newDocument, { name, completed })
+  }
+
   useEffect(() => {
     const getData = async () => {
       const tasksReference = collection(db, 'tasks')
@@ -42,21 +57,6 @@ const Home = () => {
     getData()
   })
 
-  const handleNewTaskName = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setNewTaskName(event.target.value)
-  }
-
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
-
-    const id = Date.now().toString()
-    const name = newTaskName
-    const completed = false
-
-    const newDocument = doc(db, 'tasks', id)
-    await setDoc(newDocument, { name, completed })
-  }
-
   const toggleCompletion = async (id: string, completed: boolean) => {
     const documentReference = doc(db, 'tasks', id)
     await updateDoc(documentReference, { completed: !completed })
@@ -71,6 +71,7 @@ const Home = () => {
     <>
       <Head>
         <title>Tasks</title>
+        <meta name='description' content='Task manager built with Firebase' />
       </Head>
       <h1>Tasks</h1>
       {tasks?.map(({ id, name, completed }) => (
@@ -94,6 +95,7 @@ const Home = () => {
           value={newTaskName}
           onChange={handleNewTaskName}
           placeholder='Task name'
+          aria-label='Task name'
           type='text'
           required
         />
